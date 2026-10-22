@@ -3,7 +3,7 @@ import { requestWalletAccounts, shortenAddress } from './wallet';
 
 test('connection requests accounts only and returns the real address', async () => {
   const address = '0x1234567890123456789012345678901234567890';
-  const methods: string[] = [];
+  const methods = [];
   const result = await requestWalletAccounts({ request: async ({ method }) => { methods.push(method); return [address]; } });
   expect(methods).toEqual(['eth_requestAccounts']);
   expect(result).toBe(address);
