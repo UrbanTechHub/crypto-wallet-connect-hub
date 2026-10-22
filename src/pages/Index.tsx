@@ -1,232 +1,76 @@
-
-import React, { useState } from 'react';
-import { Shield, Wallet, Lock, Zap, CheckCircle, Users, Award, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowUpRight, ArrowRight, Shield, Wallet, Fingerprint, Code2, Activity, Check, ChevronDown, Zap, Globe2, LockKeyhole, Menu, Copy, LogOut, Loader2, CircleCheck, Layers3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import shieldImage from '@/assets/security-shield.jpg';
+import { getWalletProvider, requestWalletAccounts, shortenAddress } from '@/lib/wallet';
 
-const Index = () => {
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
+const services = [
+  { icon: Wallet, title: 'Wallet security', category: 'Wallet', tag: 'PERSONAL PROTECTION', description: 'Build a stronger line of defense around your digital assets.', features: ['Token approval review', 'Wallet exposure assessment', 'Multi-signature guidance'], detail: 'Review wallet permissions, understand asset exposure, and explore safer custody practices. Never share your recovery phrase or private key.' },
+  { icon: Code2, title: 'Smart contract audit', category: 'Protocol', tag: 'CODE CONFIDENCE', description: 'Find weaknesses before they become vulnerabilities.', features: ['Contract code review', 'Vulnerability assessment', 'Gas optimization review'], detail: 'An in-depth review of contract logic, access controls, and potential attack vectors. An audit requires your contract address and source code; connecting alone does not perform an audit.' },
+  { icon: Layers3, title: 'DeFi protection', category: 'Protocol', tag: 'PROTOCOL RESILIENCE', description: 'Navigate decentralized finance with greater confidence.', features: ['Protocol risk assessment', 'Liquidity risk review', 'Oracle security analysis'], detail: 'Explore risks across protocol integrations, liquidity mechanisms, price oracles, and governance. No protocol can guarantee that funds are free from risk.' },
+  { icon: Activity, title: 'Threat intelligence', category: 'Wallet', tag: 'PROACTIVE DEFENSE', description: 'Stay informed about the risks that matter to your wallet.', features: ['Address exposure review', 'Suspicious activity analysis', 'Incident response planning'], detail: 'Understand suspicious activity and plan a security response. Live monitoring and alerts are not yet connected on this website.' },
+];
+const faq = [
+  ['What happens when I connect my wallet?', 'Your wallet asks you to share your public address. Connecting does not transfer assets, grant token approvals, or sign a transaction. You can disconnect from this page at any time.'],
+  ['Will you ever ask for my recovery phrase?', 'No. Never enter or share your recovery phrase or private key with manstorm Secure, or with anyone claiming to provide wallet support.'],
+  ['Which wallets are supported?', 'This page supports installed Ethereum-compatible browser wallets, including MetaMask. On mobile, open this website inside your wallet’s built-in browser.'],
+  ['Does connecting automatically secure my assets?', 'No. Wallet connection identifies your public account only. Services shown here describe available security areas; automated scans, audit delivery, and live alerts are not yet integrated.'],
+];
 
-  const connectWallet = async () => {
-    // Simulate wallet connection
-    if (window.ethereum) {
-      try {
-        // This is a mock implementation - in production you'd use actual wallet connection
-        const mockAddress = '0x1234...5678';
-        setWalletAddress(mockAddress);
-        setIsWalletConnected(true);
-        console.log('Wallet connected:', mockAddress);
-      } catch (error) {
-        console.error('Failed to connect wallet:', error);
-      }
-    } else {
-      alert('Please install MetaMask or another Web3 wallet');
-    }
-  };
+function Brand() {
+  return <a href="#" className="brand" aria-label="manstorm Secure home"><span className="brand-mark"><Shield strokeWidth={1.5} /><Zap className="brand-bolt" /></span><span>manstorm <strong>Secure</strong></span></a>;
+}
 
-  const services = [
-    {
-      icon: Shield,
-      title: 'Smart Contract Audits',
-      description: 'Comprehensive security audits for your smart contracts and DeFi protocols',
-      features: ['Code Review', 'Vulnerability Assessment', 'Gas Optimization', 'Compliance Check']
-    },
-    {
-      icon: Lock,
-      title: 'DeFi Security Solutions',
-      description: 'Advanced protection for decentralized finance applications and protocols',
-      features: ['Flash Loan Protection', 'MEV Protection', 'Liquidity Security', 'Oracle Security']
-    },
-    {
-      icon: Wallet,
-      title: 'Wallet Security Services',
-      description: 'Multi-signature wallets and advanced security infrastructure',
-      features: ['Multi-Sig Setup', 'Cold Storage', 'Recovery Solutions', '24/7 Monitoring']
-    }
-  ];
+export default function Index() {
+  const [walletOpen, setWalletOpen] = useState(false);
+  const [address, setAddress] = useState('');
+  const [connecting, setConnecting] = useState(false);
+  const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const [filter, setFilter] = useState('All solutions');
+  const [selected, setSelected] = useState<(typeof services)[number] | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const features = [
-    { icon: Shield, title: 'Military-Grade Security', description: 'Enterprise-level protection for your crypto assets' },
-    { icon: Zap, title: 'Real-Time Monitoring', description: '24/7 automated threat detection and response' },
-    { icon: Users, title: 'Expert Team', description: 'Certified security professionals with proven track record' },
-    { icon: Award, title: 'Industry Recognition', description: 'Trusted by leading DeFi protocols and institutions' }
-  ];
+  async function connect() {
+    setError('');
+    const provider = getWalletProvider();
+    if (!provider) { setError('No wallet found. Install an Ethereum-compatible wallet, or open this page in your wallet’s browser.'); return; }
+    setConnecting(true);
+    try { setAddress(await requestWalletAccounts(provider)); }
+    catch (e) { setError((e as { code?: number }).code === 4001 ? 'Connection declined. Your wallet remains disconnected.' : e instanceof Error ? e.message : 'Unable to connect. Please try again.'); }
+    finally { setConnecting(false); }
+  }
+  const walletButton = (compact = false) => <Button className={`interact-button ${compact ? 'header-wallet' : ''}`} onClick={() => { setError(''); setWalletOpen(true); }}><Wallet />{address ? shortenAddress(address) : 'Connect wallet'}{!compact && <ArrowUpRight />}</Button>;
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white">
-      {/* Header */}
-      <header className="container mx-auto px-6 py-6 flex justify-between items-center border-b border-slate-800">
-        <div className="flex items-center space-x-2">
-          <Shield className="h-8 w-8 text-blue-400" />
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            CryptoSecure
-          </span>
-        </div>
-        
-        <div className="flex items-center space-x-4">
-          {isWalletConnected ? (
-            <div className="flex items-center space-x-2 bg-green-900/30 px-4 py-2 rounded-lg border border-green-500/30">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm font-mono">{walletAddress}</span>
-            </div>
-          ) : (
-            <Button 
-              onClick={connectWallet}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
-            >
-              <Wallet className="w-4 h-4 mr-2" />
-              Connect Wallet
-            </Button>
-          )}
-        </div>
-      </header>
+  return <div className="site-shell">
+    <header className="site-header"><div className="page-width header-inner"><Brand /><nav className={menu ? 'navigation is-open' : 'navigation'} aria-label="Main navigation"><a href="#solutions" onClick={() => setMenu(false)}>Solutions <ChevronDown size={13} /></a><a href="#approach" onClick={() => setMenu(false)}>Our approach</a><a href="#faq" onClick={() => setMenu(false)}>FAQ</a></nav><div className="header-actions">{walletButton(true)}<Button variant="ghost" size="icon" className="mobile-menu" onClick={() => setMenu(!menu)} aria-label="Toggle navigation"><Menu /></Button></div></div></header>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20 text-center">
-        <div className="max-w-4xl mx-auto">
-          <Badge className="mb-6 bg-blue-900/50 text-blue-300 border-blue-500/30">
-            Trusted by 1000+ DeFi Protocols
-          </Badge>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Secure Your{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              Crypto Future
-            </span>
-          </h1>
-          
-          <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Professional blockchain security solutions for smart contracts, DeFi protocols, 
-            and institutional crypto infrastructure. Protect your assets with military-grade security.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 px-8 py-4 text-lg"
-            >
-              Get Security Audit
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-slate-600 text-slate-300 hover:bg-slate-800 px-8 py-4 text-lg"
-            >
-              View Our Work
-            </Button>
-          </div>
-        </div>
+    <main>
+      <section className="hero">
+        <img className="hero-image" src={shieldImage} width={1536} height={1024} alt="Sculptural metallic security shield with a mint glass core and lock" />
+        <div className="page-width hero-inner"><div className="hero-copy"><div className="eyebrow"><span className="status-dot" /> YOUR SECURITY. NO COMPROMISE.</div><h1>manstorm Secure<span>A stronger shield<br />for your Web3 world.</span></h1><p>Advanced crypto security. Clearer confidence.<br className="desktop-break" /> Protect your wallet, contracts, and everything you’re building.</p><div className="hero-actions">{walletButton()}<Button variant="outline" asChild><a href="#solutions">Explore solutions <ArrowRight /></a></Button></div><div className="hero-assurance"><LockKeyhole size={14} /><span>Non-custodial by design</span><span className="assurance-divider" /> <span>Your keys. Always yours.</span></div></div></div>
+        <div className="hero-caption"><Fingerprint size={22} /><div><strong>Security starts with ownership.</strong><span>Never share your private keys.</span></div></div>
       </section>
 
-      {/* Services Section */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">Our Security Solutions</h2>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Comprehensive security services designed to protect your blockchain assets and infrastructure
-          </p>
-        </div>
+      <section className="trust-strip"><div className="page-width trust-inner"><span>BUILT FOR THE<br /><strong>ONCHAIN WORLD</strong></span><div><Globe2 /> Ethereum</div><div><Layers3 /> Polygon</div><div><Zap /> Arbitrum</div><div><CircleCheck /> Base</div><span className="network-note">EVM-compatible wallets <ArrowUpRight size={15} /></span></div></section>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <Card key={index} className="bg-slate-900/50 border-slate-700 hover:border-blue-500/50 transition-all duration-300 group hover:transform hover:scale-105">
-              <CardContent className="p-8">
-                <div className="mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-4 group-hover:shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
-                    <service.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                  <p className="text-slate-400 leading-relaxed">{service.description}</p>
-                </div>
-                
-                <div className="space-y-2">
-                  {service.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                      <span className="text-sm text-slate-300">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-                
-                <Button className="w-full mt-6 bg-slate-800 hover:bg-slate-700 text-white border-slate-600">
-                  Learn More
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      <section id="solutions" className="page-width solutions section-space"><div className="section-top"><div><div className="eyebrow">01 / SECURITY SOLUTIONS</div><h2>Every layer. Better protected.</h2><p>Purpose-built security for wherever you are in Web3.</p></div><div className="filter-control" aria-label="Filter solutions">{['All solutions', 'Wallet', 'Protocol'].map(item => <Button key={item} variant="ghost" className={filter === item ? 'filter-active' : ''} onClick={() => setFilter(item)} aria-pressed={filter === item}>{item}</Button>)}</div></div>
+        <div className="service-grid">{services.filter(s => filter === 'All solutions' || s.category === filter).map((service, i) => <article key={service.title} className="service-card"><div className="service-card-top"><span className={`service-icon service-icon-${services.indexOf(service)}`}><service.icon size={24} /></span><span className="service-number">0{services.indexOf(service) + 1}</span></div><div className="service-tag">{service.tag}</div><h3>{service.title}</h3><p>{service.description}</p><ul>{service.features.map(f => <li key={f}><Check size={14} />{f}</li>)}</ul><Button variant="ghost" className="service-link" onClick={() => setSelected(service)}>Explore solution <ArrowUpRight /></Button></article>)}</div>
       </section>
 
-      {/* Features Section */}
-      <section className="container mx-auto px-6 py-20 bg-slate-900/30">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">Why Choose CryptoSecure?</h2>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Industry-leading expertise and cutting-edge technology to safeguard your digital assets
-          </p>
-        </div>
+      <section className="approach-band" id="approach"><div className="page-width approach-inner"><div className="approach-heading"><div className="eyebrow">02 / OUR APPROACH</div><h2>Trust isn’t a promise.<br />It’s a foundation.</h2><p>Security that respects the principles of Web3.<br />Built around transparency, control, and you.</p><Button variant="outline" asChild><a href="#faq">Get to know manstorm <ArrowUpRight /></a></Button></div><div className="principles"><div><Fingerprint /><span><h3>You stay in control</h3><p>We never take custody of your assets or ask for your private keys.</p></span><span className="principle-num">01</span></div><div><Code2 /><span><h3>Clarity at every step</h3><p>Understand what you’re connecting to. No hidden approvals. No surprises.</p></span><span className="principle-num">02</span></div><div><Shield /><span><h3>Defense in depth</h3><p>A layered approach to wallet, contract, and protocol security.</p></span><span className="principle-num">03</span></div></div></div></section>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <div key={index} className="text-center group">
-              <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
-                <feature.icon className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-              <p className="text-slate-400 leading-relaxed">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <section className="page-width journey section-space"><div className="eyebrow">03 / A MORE SECURE START</div><h2>Your next move, with confidence.</h2><div className="journey-grid">{[{ n: '01', icon: Wallet, title: 'Connect your wallet', text: 'A secure connection to your public address. Your assets stay right where they belong.' }, { n: '02', icon: Shield, title: 'Find your solution', text: 'Explore security options tailored to your wallet, smart contracts, or protocol.' }, { n: '03', icon: ArrowUpRight, title: 'Build on stronger ground', text: 'Understand your risks and take informed steps toward a more secure onchain future.' }].map(step => <div className="journey-step" key={step.n}><div className="journey-line"><span>{step.n}</span><step.icon size={23} /></div><h3>{step.title}</h3><p>{step.text}</p></div>)}</div></section>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-3xl p-12 text-center border border-blue-500/20">
-          <h2 className="text-4xl font-bold mb-4">Ready to Secure Your Protocol?</h2>
-          <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied clients who trust us with their blockchain security needs
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 px-8 py-4 text-lg"
-            >
-              Start Security Audit
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-slate-600 text-slate-300 hover:bg-slate-800 px-8 py-4 text-lg"
-            >
-              Schedule Consultation
-            </Button>
-          </div>
-        </div>
-      </section>
+      <section id="faq" className="faq-section"><div className="page-width faq-inner"><div><div className="eyebrow">GOOD QUESTIONS. CLEAR ANSWERS.</div><h2>A little more clarity.</h2><p>Because confidence starts with understanding.</p></div><div className="faq-list">{faq.map(([q, a], i) => <div className="faq-item" key={q}><Button variant="ghost" className="faq-question" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i} aria-controls={`faq-${i}`}>{q}<ChevronDown className={openFaq === i ? 'rotated' : ''} /></Button>{openFaq === i && <p id={`faq-${i}`}>{a}</p>}</div>)}</div></div></section>
 
-      {/* Footer */}
-      <footer className="container mx-auto px-6 py-12 border-t border-slate-800">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            <Shield className="h-6 w-6 text-blue-400" />
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              CryptoSecure
-            </span>
-          </div>
-          
-          <div className="text-slate-400 text-center md:text-right">
-            <p>&copy; 2024 CryptoSecure. All rights reserved.</p>
-            <p className="text-sm mt-1">Securing the future of decentralized finance</p>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-};
+      <section className="closing-band"><div className="page-width closing-inner"><div className="closing-symbol"><Shield size={44} strokeWidth={1.3} /></div><div><div className="eyebrow">YOUR WEB3 WORLD. BETTER PROTECTED.</div><h2>Make your next move a secure one.</h2></div>{walletButton()}</div></section>
+    </main>
+    <footer className="page-width site-footer"><div className="footer-top"><Brand /><span>Security for a world that never stops.</span><a href="#solutions">Explore solutions <ArrowUpRight size={14} /></a></div><div className="footer-bottom"><span>© 2026 manstorm Secure</span><span>Non-custodial. No private keys. No compromises.</span><a href="#faq">Security & transparency</a></div></footer>
 
-export default Index;
+    <Dialog open={walletOpen} onOpenChange={setWalletOpen}><DialogContent className="wallet-dialog"><div className="dialog-icon"><Wallet size={28} /></div><DialogTitle className="text-2xl">{address ? 'Your connected wallet' : 'Connect your wallet'}</DialogTitle><DialogDescription>{address ? 'Your assets remain in your wallet. Connection only shares your public address.' : 'Connect an Ethereum-compatible browser wallet. No signatures, token approvals, or transactions are requested.'}</DialogDescription>{address ? <><div className="wallet-address"><CircleCheck className="text-primary" /><code>{shortenAddress(address)}</code><Button variant="ghost" size="icon" aria-label="Copy wallet address" onClick={async () => { try { await navigator.clipboard.writeText(address); setCopied(true); } catch { setError('Your browser could not copy the address.'); } }}>{copied ? <Check /> : <Copy />}</Button></div><Button variant="outline" onClick={() => { setAddress(''); setCopied(false); setWalletOpen(false); }}><LogOut />Disconnect</Button></> : <Button className="interact-button w-full" disabled={connecting} onClick={connect}>{connecting ? <Loader2 className="animate-spin" /> : <Wallet />}{connecting ? 'Waiting for your wallet…' : 'Connect browser wallet'}<ArrowUpRight /></Button>}{error && <p role="alert" className="wallet-error">{error}</p>}<div className="wallet-safety"><LockKeyhole size={16} /><span>Never share your recovery phrase or private key.</span></div></DialogContent></Dialog>
+    <Dialog open={selected !== null} onOpenChange={open => { if (!open) setSelected(null); }}><DialogContent>{selected && <><div className="dialog-icon"><selected.icon size={28} /></div><div className="eyebrow">{selected.tag}</div><DialogTitle className="text-2xl">{selected.title}</DialogTitle><DialogDescription className="leading-relaxed">{selected.detail}</DialogDescription><ul className="detail-features">{selected.features.map(f => <li key={f}><Check size={16} />{f}</li>)}</ul><p className="service-disclaimer">Service processing is not yet available. You can connect your wallet and explore the security options.</p><Button className="interact-button" onClick={() => { setSelected(null); setWalletOpen(true); }}><Wallet />{address ? 'View connected wallet' : 'Connect wallet'}<ArrowUpRight /></Button></>}</DialogContent></Dialog>
+  </div>;
+}
