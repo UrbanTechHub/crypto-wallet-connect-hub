@@ -1,0 +1,34 @@
+import { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { ArrowRight, ArrowUpRight, Check, Shield, Fingerprint, Code2, LockKeyhole } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { SiteLayout } from '@/components/SiteLayout';
+import { WalletButton } from '@/components/WalletButton';
+import { IntelligenceFeed } from '@/components/IntelligenceFeed';
+import { articles, services } from '@/lib/security-content';
+import shieldImage from '@/assets/security-shield.jpg';
+import NotFound from './NotFound';
+
+function PageIntro({ label, title, description }: { label: string; title: string; description: string }) {
+  return <section className="page-intro"><div className="page-width"><div className="eyebrow">MANSTORM SECURE / {label}</div><h1>{title}</h1><p>{description}</p><div className="intro-rule"><Shield size={17} /><span>KNOWLEDGE IS YOUR FIRST LINE OF DEFENSE</span></div></div></section>;
+}
+
+export function SolutionsPage() {
+  const [filter, setFilter] = useState('All solutions');
+  return <SiteLayout><main><PageIntro label="SOLUTIONS" title="Security, from every angle." description="Explore the disciplines behind stronger wallet habits, more resilient protocols, and a considered response to threats." /><section className="page-width section-space"><div className="section-top"><div className="eyebrow">EXPLORE THE SECURITY STACK</div><div className="filter-control">{['All solutions', 'Wallet', 'Protocol'].map(item => <Button key={item} variant="ghost" className={filter === item ? 'filter-active' : ''} onClick={() => setFilter(item)} aria-pressed={filter === item}>{item}</Button>)}</div></div>{services.filter(s => filter === 'All solutions' || s.category === filter).map((s, i) => <article className="solution-detail editorial-row" key={s.title}><div className="solution-detail-heading"><span className={`service-icon service-icon-${services.indexOf(s)}`}><s.icon /></span><div className="eyebrow">0{services.indexOf(s) + 1} / {s.tag}</div><h2>{s.title}</h2><p>{s.description}</p></div><div className="solution-detail-copy"><h3>The bigger picture</h3><p>{s.detail}</p><h3>A practical starting point</h3><p>{s.scope}</p><ul className="detail-features">{s.features.map(f => <li key={f}><Check size={16} />{f}</li>)}</ul></div></article>)}<div className="transparency-note"><LockKeyhole /><div><h3>Clear boundaries. No hidden actions.</h3><p>These solution areas are informational. Service processing, security scans, and wallet connections are not available on this website. Connect wallet buttons are inactive and request nothing from your wallet.</p></div></div></section><IntelligenceFeed preview /></main></SiteLayout>;
+}
+
+export function IntelligencePage() {
+  return <SiteLayout><main><PageIntro label="INTELLIGENCE" title="Less noise. More perspective." description="Explore practical security thinking—from overlooked permissions to the questions worth asking before you trust a protocol." /><IntelligenceFeed /><section className="reading-note page-width"><Shield /><p>Educational content, not investment advice or a personal security assessment. Verify information independently before taking action.</p></section></main></SiteLayout>;
+}
+
+export function ArticlePage() {
+  const { slug } = useParams();
+  const article = articles.find(a => a.slug === slug);
+  if (!article) return <NotFound />;
+  return <SiteLayout><main><section className="article-heading page-width"><Button variant="ghost" asChild><Link to="/intelligence">← Intelligence</Link></Button><div className="eyebrow">{article.category} / {article.minutes}</div><h1>{article.title}</h1><p>{article.summary}</p></section><div className="article-layout page-width"><aside><span className="eyebrow">IN THIS FIELD NOTE</span>{article.sections.map(([title], i) => <a href={`#section-${i}`} key={title}>0{i + 1} / {title}</a>)}</aside><article>{article.sections.map(([title, body], i) => <section id={`section-${i}`} className="article-section" key={title}><span className="eyebrow">0{i + 1}</span><h2>{title}</h2><p>{body}</p></section>)}<div className="transparency-note"><Shield /><p>Education only. This is not a live scan, an audit report, or a guarantee of protection.</p></div><Button variant="outline" asChild><Link to="/solutions">Explore security disciplines <ArrowUpRight /></Link></Button></article></div><IntelligenceFeed preview /></main></SiteLayout>;
+}
+
+export function ApproachPage() {
+  return <SiteLayout><main><PageIntro label="OUR APPROACH" title="Trust is built on clarity." description="Security is not a single badge, a button, or a promise. It is a series of informed decisions—and knowing exactly what you authorize." /><section className="approach-visual"><img src={shieldImage} alt="Metallic shield with a mint glass security core" /><div className="page-width"><div className="eyebrow">OWNERSHIP / TRANSPARENCY / RESILIENCE</div><h2>Your keys.<br />Your decisions.<br />Your control.</h2></div></section><section className="page-width section-space"><div className="section-top"><div><div className="eyebrow">THE MANSTORM PRINCIPLES</div><h2>Stronger foundations, not shortcuts.</h2></div></div><div className="principle-grid">{[{ icon: Fingerprint, title: 'Ownership comes first', text: 'Your recovery phrase and private keys never belong in a website, a chat, or a support ticket. Keep custody decisions separate from everyday application interactions.' }, { icon: Code2, title: 'Evidence before confidence', text: 'Know the scope of a review, the limits of a tool, and the source of a claim. We do not display invented scan scores, simulated threats, or unverified protection results.' }, { icon: Shield, title: 'Layers, not a silver bullet', text: 'Combine careful permissions, secure key storage, contract review, and incident planning. No single measure eliminates every risk, and controls need to evolve as systems change.' }].map((p, i) => <article key={p.title}><p.icon /><span className="eyebrow">0{i + 1}</span><h3>{p.title}</h3><p>{p.text}</p></article>)}</div><div className="transparency-note"><LockKeyhole /><div><h3>What this platform does today</h3><p>manstorm Secure provides security information and educational resources. No wallet access, signatures, approvals, transactions, live monitoring, or service processing are requested or performed. Wallet buttons are presentation-only.</p></div></div></section><section className="closing-band"><div className="page-width closing-inner"><Shield size={36} /><div><div className="eyebrow">TURN PERSPECTIVE INTO BETTER QUESTIONS</div><h2>Explore your next line of defense.</h2></div><Button asChild><Link to="/solutions">Explore solutions <ArrowRight /></Link></Button></div></section></main></SiteLayout>;
+}
