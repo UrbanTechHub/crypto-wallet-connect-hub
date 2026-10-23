@@ -1,6 +1,6 @@
 import { test, expect, afterEach } from 'bun:test';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { WalletButton } from './WalletButton';
+import { WalletButton } from '../components/WalletButton';
 
 afterEach(cleanup);
 
