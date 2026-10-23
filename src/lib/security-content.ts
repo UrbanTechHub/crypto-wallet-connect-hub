@@ -24,3 +24,10 @@ export const articles = [
     ['Where do dependencies lead?', 'Trace oracle sources, bridge assumptions, external contracts, and collateral concentration. Consider liquidity during stressed conditions and how you would exit a position. A security review does not remove market, governance, or counterparty risk.'],
   ] },
 ];
+
+export const faqs = [
+  ['What do the wallet buttons on this site do?', 'Nothing—and that is intentional. They are presentation buttons. manstorm Secure does not request wallet access, signatures, approvals, or transactions anywhere on this website.'],
+  ['Will you ever ask for my recovery phrase?', 'No. Never enter or share your recovery phrase or private key with manstorm Secure, or with anyone claiming to provide wallet support. No legitimate service needs it.'],
+  ['What do the security solutions cover?', 'Each solution area explains a security discipline: wallet hygiene, contract review, protocol risk, and threat response. They describe how professionals think about risk, not an automated scan of your assets.'],
+  ['Are the security services live?', 'Not yet. Service processing, live monitoring, and audit delivery are not integrated on this website. Nothing shown here is a live or simulated security result about you or your assets.'],
+];
