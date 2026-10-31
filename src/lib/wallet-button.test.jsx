@@ -5,9 +5,9 @@ import { WalletButton } from '../components/WalletButton';
 afterEach(cleanup);
 
 test('wallet buttons keep the interact-button class and stay inert', () => {
-  const requests: string[] = [];
-  (globalThis as Record<string, unknown>).ethereum = {
-    request: async ({ method }: { method: string }) => { requests.push(method); return []; },
+  const requests = [];
+  (globalThis).ethereum = {
+    request: async ({ method }) => { requests.push(method); return []; },
   };
   const { getByRole } = render(<WalletButton />);
   const button = getByRole('button', { name: /connect wallet/i });
