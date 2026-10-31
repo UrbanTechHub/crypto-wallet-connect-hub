@@ -9,7 +9,7 @@ import { articles, services } from '@/lib/security-content';
 import shieldImage from '@/assets/security-shield.jpg';
 import NotFound from './NotFound';
 
-function PageIntro({ label, title, description }: { label: string; title: string; description: string }) {
+export function PageIntro({ label, title, description }: { label: string; title: string; description: string }) {
   return <section className="page-intro"><div className="page-width"><div className="eyebrow">MANSTORM SECURE / {label}</div><h1>{title}</h1><p>{description}</p><div className="intro-rule"><Shield size={17} /><span>KNOWLEDGE IS YOUR FIRST LINE OF DEFENSE</span></div></div></section>;
 }
 
