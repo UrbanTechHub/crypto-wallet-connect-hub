@@ -23,6 +23,26 @@ export const articles = [
     ['Who can change the rules?', 'Identify upgrade administrators, pause authorities, governance controls, and timelocks. Understand which actors can change parameters or implementations, and whether users have time to respond.'],
     ['Where do dependencies lead?', 'Trace oracle sources, bridge assumptions, external contracts, and collateral concentration. Consider liquidity during stressed conditions and how you would exit a position. A security review does not remove market, governance, or counterparty risk.'],
   ] },
+  { slug: 'address-poisoning', category: 'WALLET HYGIENE', title: 'Address poisoning: the scam that waits for a typo.', summary: 'Why an address copied from your transaction history can be an attacker\'s— and how to build a habit that beats the trick.', minutes: '4 min read', sections: [
+    ['How the trap is set', 'An attacker studies your public activity and sends dust from an address that mimics one of yours, matching the first and last characters. The transaction costs them little and needs no response from you. The goal is simple: their address becomes part of your history.'],
+    ['Why history is not a safe place', 'Wallets and explorers shorten addresses for readability, and human memory anchors on the start and end of a string. When you copy an address from a past transaction months later, the poisoned entry is indistinguishable from a real one at a glance.'],
+    ['A habit that beats the trick', 'Keep a small, independently verified address book for destinations you use. Confirm the full string, not the familiar ends, before sending. For a large transfer, send a small test amount first and confirm arrival at a known-good destination.'],
+  ] },
+  { slug: 'support-impersonation', category: 'SOCIAL ENGINEERING', title: 'Support never needs your seed phrase.', summary: 'Impersonation is the most human attack in crypto—and the easiest one to end with a single rule.', minutes: '5 min read', sections: [
+    ['The script rarely changes', 'You post a support question publicly. Within minutes, an imposter replies with helpful energy and moves the conversation to private messages. The next step is always a form to fill in, a wallet to "validate," or a link to a synchronization tool.'],
+    ['Why the ask is always wrong', 'Support teams can read public blockchain data and check account status on their own systems. Nothing legitimate requires your recovery phrase, your private key, or a transaction you did not initiate. Any request for those is the attack itself.'],
+    ['Ending the conversation', 'Contact projects only through domains you reached by typing, not through replies or search ads. State the rule plainly—support never asks for keys—and disengage the moment it is broken. A real agent will never object to that rule.'],
+  ] },
+  { slug: 'signature-risk', category: 'WALLET HYGIENE', title: 'A signature is not a receipt.', summary: 'Signing offchain data can grant permissions, spend funds, or transfer ownership— even when no transaction appears.', minutes: '4 min read', sections: [
+    ['What signing actually does', 'A signature is cryptographic proof that your key approved a piece of data. Contracts can act on that proof: spend tokens through permits, claim listings, or execute delegated actions. Nothing needs to move onchain at signing time for value to be at stake.'],
+    ['The unreadable middle', 'Interfaces present signatures in different levels of detail, and the consequential fields can sit behind technical encodings. A message that looks like a login can authorize an allowance. If a signature request cannot be read and understood, it cannot be safely approved.'],
+    ['A signing discipline', 'Ask three questions before signing: what data am I proving, who will act on it, and what can they do with it. If any answer is unclear, decline and ask the application to explain the request through its documentation.'],
+  ] },
+  { slug: 'opsec-basics', category: 'SECURITY STRATEGY', title: 'Operational security starts before the wallet.', summary: 'Your device, your channels, and your public footprint shape what an attacker can reach long before any contract does.', minutes: '6 min read', sections: [
+    ['The surface you already publish', 'A public address links every action you have taken. Labels, ENS names, and visible holdings tell a watcher what you are worth and where you keep it. Consider separating long-term holdings from an address that appears in public discussions.'],
+    ['Channels are an attack surface', 'Discord DMs, Telegram groups, and search ads are unauthenticated territory. Treat identity claims there as unverified until proven through an official domain, and treat unexpected files, links, and calendar invites as hostile by default.'],
+    ['The device layer', 'Browsers carry extensions that can read every page you visit; systems carry credentials that outlive a compromise. Keep signing isolated—on a hardware wallet, on a device kept clean—and keep the machine that signs separate from the machine that experiments.'],
+  ] },
 ];
 
 export const faqs = [
