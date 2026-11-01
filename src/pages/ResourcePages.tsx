@@ -51,7 +51,7 @@ export function GettingStartedPage() {
         <div className="stage-heading"><span className="stage-num">0{i + 1}</span><div><h2>{stage.title}</h2><p>{stage.summary}</p></div><ListChecks className="stage-icon" /></div>
         <ul>{stage.checks.map(check => <li key={check}><Check size={15} />{check}</li>)}</ul>
         <div className="stage-note"><span className="eyebrow">WHY IT MATTERS</span><p>{stage.note}</p></div>
-      </article>)}
+      </article>)}</div>
       <div className="transparency-note"><LockKeyhole /><div><h3>A guide, not a checklist audit.</h3><p>This sequence reflects widely practiced security habits. No wallet connection, scan, or verification is performed on this website—every step here is one you take with your own tools.</p></div></div>
     </section>
     <IntelligenceFeed preview />
