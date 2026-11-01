@@ -46,8 +46,8 @@ export const articles = [
 ];
 
 export const faqs = [
-  ['What do the wallet buttons on this site do?', 'Nothing—and that is intentional. They are presentation buttons. manstorm Secure does not request wallet access, signatures, approvals, or transactions anywhere on this website.'],
-  ['Will you ever ask for my recovery phrase?', 'No. Never enter or share your recovery phrase or private key with manstorm Secure, or with anyone claiming to provide wallet support. No legitimate service needs it.'],
+  ['What do the wallet buttons on this site do?', 'Nothing—and that is intentional. They are presentation buttons. Nodehub Secure does not request wallet access, signatures, approvals, or transactions anywhere on this website.'],
+  ['Will you ever ask for my recovery phrase?', 'No. Never enter or share your recovery phrase or private key with Nodehub Secure, or with anyone claiming to provide wallet support. No legitimate service needs it.'],
   ['What do the security solutions cover?', 'Each solution area explains a security discipline: wallet hygiene, contract review, protocol risk, and threat response. They describe how professionals think about risk, not an automated scan of your assets.'],
   ['Are the security services live?', 'Not yet. Service processing, live monitoring, and audit delivery are not integrated on this website. Nothing shown here is a live or simulated security result about you or your assets.'],
 ];

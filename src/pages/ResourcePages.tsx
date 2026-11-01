@@ -13,7 +13,7 @@ export function ThreatsPage() {
     <section className="page-width section-space">
       <div className="section-top"><div className="eyebrow">SIX PATTERNS WORTH KNOWING</div></div>
       <div className="threat-grid">{threats.map((threat, i) => <article className="threat-card" key={threat.name}>
-        <div className="threat-card-top"><span className="service-icon service-icon-{i}"><threat.icon size={22} /></span><span className="service-number">0{i + 1}</span></div>
+        <div className="threat-card-top"><span className="service-icon service-icon-{i % 4}"><threat.icon size={22} /></span><span className="service-number">0{i + 1}</span></div>
         <div className="eyebrow">{threat.category}</div>
         <h3>{threat.name}</h3>
         <p>{threat.pattern}</p>
