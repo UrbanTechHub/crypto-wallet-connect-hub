@@ -19,7 +19,7 @@ export function useReveal() {
 }
 
 export function Brand() {
-  return <Link to="/" className="brand" aria-label="manstorm Secure home"><span className="brand-mark"><Shield strokeWidth={1.5} /><Zap className="brand-bolt" /></span><span>manstorm <strong>Secure</strong></span></Link>;
+  return <Link to="/" className="brand" aria-label="Nodehub Secure home"><span className="brand-mark"><Shield strokeWidth={1.5} /><Zap className="brand-bolt" /></span><span>Nodehub <strong>Secure</strong></span></Link>;
 }
 
 export function SiteLayout({ children }: { children: ReactNode }) {
@@ -30,5 +30,5 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
   }, [pathname]);
   useReveal();
-  return <div className="site-shell"><header className="site-header"><div className="page-width header-inner"><Brand /><nav className={menu ? 'navigation is-open' : 'navigation'} aria-label="Main navigation">{[['/solutions', 'Solutions'], ['/intelligence', 'Intelligence'], ['/approach', 'Our approach']].map(([path, name]) => <NavLink key={path} to={path}>{name}</NavLink>)}</nav><div className="header-actions"><WalletButton compact /><Button variant="ghost" size="icon" className="mobile-menu" onClick={() => setMenu(!menu)} aria-label={menu ? 'Close navigation' : 'Open navigation'} aria-expanded={menu}>{menu ? <X /> : <Menu />}</Button></div></div></header>{children}<footer className="page-width site-footer"><div className="footer-top"><Brand /><span>Security for a world that never stops.</span><Link to="/intelligence">Security intelligence <ArrowUpRight size={14} /></Link></div><div className="footer-bottom"><span>© 2026 manstorm Secure</span><span>Never share your recovery phrase or private keys.</span><Link to="/approach">Security & transparency</Link></div></footer></div>;
+  return <div className="site-shell"><header className="site-header"><div className="page-width header-inner"><Brand /><nav className={menu ? 'navigation is-open' : 'navigation'} aria-label="Main navigation">{[['/solutions', 'Solutions'], ['/intelligence', 'Intelligence'], ['/threats', 'Threats'], ['/glossary', 'Glossary'], ['/approach', 'Our approach'], ['/getting-started', 'Get started']].map(([path, name]) => <NavLink key={path} to={path}>{name}</NavLink>)}</nav><div className="header-actions"><WalletButton compact /><Button variant="ghost" size="icon" className="mobile-menu" onClick={() => setMenu(!menu)} aria-label={menu ? 'Close navigation' : 'Open navigation'} aria-expanded={menu}>{menu ? <X /> : <Menu />}</Button></div></div></header>{children}<footer className="page-width site-footer"><div className="footer-top"><Brand /><span>Security for a world that never stops.</span><Link to="/intelligence">Security intelligence <ArrowUpRight size={14} /></Link></div><div className="footer-bottom"><span>© 2026 Nodehub Secure</span><span>Never share your recovery phrase or private keys.</span><Link to="/approach">Security & transparency</Link></div></footer></div>;
 }
